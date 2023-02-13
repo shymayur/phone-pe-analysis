@@ -1,0 +1,29 @@
+import pandas as pd
+import mysql.connector
+import xlrd
+
+conn= mysql.connector.connect(
+    host="localhost",
+    user= "root",
+    password="password",
+    database="phonepe_db"
+    
+)
+cursor= conn.cursor()
+
+loc = ("C:/Users/Mayur/pulse3/combineData.xlsx")
+l = list()
+a = xlrd.open_workbook(loc)
+sheet = a.sheet_by_index(0)
+sheet.cell_value(0,0)
+
+for i in range(1, len(a)):
+    i.append(tuple(sheet.row_values(i)))
+    
+q = "insert into phonepe_pulse(typeTF, count, amount, name, year, quarter)values(%s, %s, %s, %s, %s, %s)"
+cursor.execute(q, l)
+conn.commit()
+
+#cursor.execute("create table phonepe_pulse(typeTF varchar(30), count int, amount int, name varchar(30), year int, quarter char(10))")
+
+conn.close()
